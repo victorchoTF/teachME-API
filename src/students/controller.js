@@ -68,26 +68,9 @@ function deleteStudent(req, res){
     });
 }
 
-function loginStudent(req, res){
-    const email = req.email;
-    const password = req.password;
-
-    pool.query(queries.getStudentByEmail, email, (error, results) => {
-        if (error)
-            return res.status(500).send("Internal Server Error");
-
-        const user = results.rows[0];
-        if (user.password !== password)
-            return res.status(401).send("Passowrd missmatch");
-
-        res.status(200).json([user, "Student"]);
-    })
-}
-
 module.exports = {
     getStudents,
     getStudentById,
     addStudent,
     deleteStudent, 
-    loginStudent
 }

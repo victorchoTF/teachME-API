@@ -9,6 +9,4 @@ router.post("/", controller.addTeacher);
 router.get("/:id", controller.getTeacherById);
 router.delete("/:id", controller.deleteTeacher);
 
-router.post("/login", controller.loginStudent)
-
 module.exports = router;
