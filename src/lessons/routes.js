@@ -3,7 +3,8 @@ const controller = require("./controller");
 
 const router = Router();
 
-router.get("/", (req, res) => {res.send("Getting lessons!")})
 router.post("/", controller.addLessons)
+
+router.get("/teacher/:email", controller.getLessonsByTeacherEmail)
 
 module.exports = router;

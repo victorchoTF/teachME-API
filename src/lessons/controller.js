@@ -2,6 +2,23 @@ const pool = require("../../db");
 const queries = require("./queries");
 const teacherQueries = require("../teachers/queries");
 
+function getLessonsByTeacherEmail(req, res){
+    const teacherEmail = req.params.email;
+
+    pool.query(teacherQueries.getTeacherByEmail, [teacherEmail], (error, results) => {
+        if (error)
+            return res.status(500).send("Internal Server Error");
+
+        const teacherId = results.rows[0].id;
+        pool.query(queries.getLessonsByTeacherId, [teacherId], (error, results) => {
+            if (error) 
+                return res.status(500).send("Internal Server Error");
+    
+            return res.status(200).json(results.rows);
+        });
+    });
+}
+
 function addLessons(req, res) {
     const { lessons, studentId, teacherEmail } = req.body;
 
@@ -33,7 +50,7 @@ function addLessons(req, res) {
                     lessonsProcessed++;
 
                     if (lessonsProcessed === lessons.length * Object.keys(lesson.lessons).length) {
-                        res.status(200).send("Added lessons successfully!");
+                        res.status(201).send("Added lessons successfully!");
                     }
                 });
             });
@@ -42,5 +59,6 @@ function addLessons(req, res) {
 }
 
 module.exports = {
+    getLessonsByTeacherEmail,
     addLessons
 }
