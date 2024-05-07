@@ -19,6 +19,17 @@ function getLessonsByTeacherEmail(req, res){
     });
 }
 
+function getLessonsByStudentId(req, res){
+    const studentId = req.params.id;
+
+    pool.query(queries.getLessonsByStudentId, [studentId], (error, results) => {
+        if (error)
+            return res.status(500).send("Internal Server Error");
+
+        return res.status(200).json(results.rows);
+    })
+}
+
 function addLessons(req, res) {
     const { lessons, studentId, teacherEmail } = req.body;
 
@@ -60,5 +71,6 @@ function addLessons(req, res) {
 
 module.exports = {
     getLessonsByTeacherEmail,
+    getLessonsByStudentId,
     addLessons
 }

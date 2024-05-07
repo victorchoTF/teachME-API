@@ -5,6 +5,7 @@ const router = Router();
 
 router.post("/", controller.addLessons)
 
-router.get("/teacher/:email", controller.getLessonsByTeacherEmail)
+router.get("/teacher/:email", controller.getLessonsByTeacherEmail);
+router.get("/student/:id", controller.getLessonsByStudentId);
 
 module.exports = router;
