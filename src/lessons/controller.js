@@ -1,6 +1,7 @@
 const pool = require("../../db");
 const queries = require("./queries");
 const teacherQueries = require("../teachers/queries");
+const studentQueries = require("../students/queries");
 
 function getLessonsByTeacherEmail(req, res){
     const teacherEmail = req.params.email;
@@ -69,8 +70,41 @@ function addLessons(req, res) {
     });
 }
 
+function deleteExactLesson(req, res){
+    const {student_id, teacher_name, timestamp} = req.params;
+    pool.query(studentQueries.getStudentById, [student_id], (error, results) => {
+        if (error)
+            return res.status(500).send("Internal Server Error");
+
+        if (!results.rows.length)
+            return res.status(404).send("Student non-existent");
+
+        pool.query(teacherQueries.getTeacherByName, [teacher_name], (error, results) => {
+            if (error)
+                return res.status(500).send("Internal Server Error");
+            
+            const teacher_id = results.rows[0].id
+            pool.query(teacherQueries.getTeacherById, [teacher_id], (error, results) => {
+                if (error)
+                    return res.status(500).send("Internal Server Error");
+        
+                if (!results.rows.length)
+                    return res.status(404).send("Teacher non-existent");
+                
+                pool.query(queries.deleteExactLesson, [student_id, teacher_id, timestamp.replace("_", " ")], (error, results) => {
+                    if (error)
+                        return res.status(500).send("Internal Server Error");
+                    
+                    res.status(200).send("Lesson deleted");
+                })
+        });
+        });
+    });
+}
+
 module.exports = {
     getLessonsByTeacherEmail,
     getLessonsByStudentId,
-    addLessons
+    addLessons,
+    deleteExactLesson,
 }

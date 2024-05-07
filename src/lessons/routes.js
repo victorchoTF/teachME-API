@@ -8,4 +8,6 @@ router.post("/", controller.addLessons)
 router.get("/teacher/:email", controller.getLessonsByTeacherEmail);
 router.get("/student/:id", controller.getLessonsByStudentId);
 
+router.delete("/:student_id/:teacher_name/:timestamp", controller.deleteExactLesson);
+
 module.exports = router;
