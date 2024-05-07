@@ -102,9 +102,28 @@ function deleteExactLesson(req, res){
     });
 }
 
+function deleteLessonsByStudentId(req, res){
+    const {student_id} = req.params;
+
+    pool.query(studentQueries.getStudentById, [student_id], (error, results) => {
+        if (error)
+            return res.status(500).send("Internal Server Error");
+
+        if (!results.rows.length)
+            return res.status(404).send("Student non-existent");
+        pool.query(queries.deleteLessonsByStudentId, [student_id], (error, results) => {
+            if (error)
+                return res.status(500).send("Internal Server Error");
+            
+            res.status(200).send("Lesson deleted");
+        });
+    });
+}
+
 module.exports = {
     getLessonsByTeacherEmail,
     getLessonsByStudentId,
     addLessons,
     deleteExactLesson,
+    deleteLessonsByStudentId
 }
